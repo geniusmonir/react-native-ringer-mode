@@ -30,6 +30,21 @@ export const RINGER_MODE = {
 type ValueOf<T> = T[keyof T];
 export type RingerModeType = ValueOf<typeof RINGER_MODE>;
 
+export interface HighPriorityNotificationConfig {
+  title: string; // notification title default: High Priority Notification
+  message: string; // notification body text default: This is a high priority Notification
+  notificationIcon: string; // drawable name like "notification_icon"
+  playSound?: boolean; // play default sound
+  playVibration?: boolean; // play default vibration
+  vibrationPattern?: number[]; // custom vibration pattern [wait, vibrate, pause, vibrate...]
+  bypassDnd?: boolean; // allow bypass of DND if granted default: false if not given
+  autoCancel?: boolean; // remove on tap default: false if not given
+  channelId?: string; // default: "priotiry_channel_id"
+  channelName?: string; // default: "Priority Notification Channel"
+  groupId?: string; // optional group
+  category?: 'alarm' | 'call' | 'message' | 'event' | 'reminder' | 'service'; // default "alarm"
+}
+
 export async function getRingerMode(): Promise<RingerModeType | undefined> {
   if (!isAndroid) {
     return;
@@ -62,4 +77,11 @@ export async function requestDndAccess(): Promise<boolean | undefined> {
   }
 
   return RingerMode.requestDndAccess();
+}
+
+export async function sendHighPriorityNotification(
+  config: HighPriorityNotificationConfig
+): Promise<void> {
+  if (!isAndroid) return;
+  return RingerMode.sendHighPriorityNotification(config);
 }
